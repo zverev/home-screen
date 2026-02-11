@@ -17,6 +17,11 @@ if [[ -z "${URLS[*]:-}" ]]; then
   exit 1
 fi
 
+if ! command -v "$CHROMIUM_BIN" >/dev/null 2>&1; then
+  echo "Chromium binary not found: $CHROMIUM_BIN" >&2
+  exit 1
+fi
+
 PROFILE_DIR="${XDG_RUNTIME_DIR:-/tmp}/metrics-kiosk-profile"
 mkdir -p "$PROFILE_DIR"
 

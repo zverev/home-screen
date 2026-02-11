@@ -28,7 +28,7 @@ install_dependencies() {
 
   echo "Installing OS dependencies..."
   sudo apt-get update
-  sudo apt-get install -y chromium-browser xprintidle playerctl
+  sudo apt-get install -y chromium xprintidle playerctl
 }
 
 # Install scripts/service files and refresh config from repository defaults.
