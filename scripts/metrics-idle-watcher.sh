@@ -18,6 +18,10 @@ if ! command -v loginctl >/dev/null 2>&1; then
   exit 1
 fi
 
+log() {
+  echo "[metrics-idle-watcher] $*"
+}
+
 get_idle_ms() {
   local session_id idle_hint idle_since_us now_us idle_us
   session_id="${XDG_SESSION_ID:-}"
@@ -90,17 +94,33 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
+log "started (idle timeout: ${IDLE_TIMEOUT_MS}ms, poll: ${POLL_SECONDS}s)"
+last_mode=""
+
 while true; do
   if ! idle_ms="$(get_idle_ms)"; then
-    echo "Unable to read idle time from loginctl; retrying..." >&2
+    log "unable to read idle time from loginctl; retrying"
     stop_kiosk
     sleep "$POLL_SECONDS"
     continue
   fi
 
-  if (( idle_ms >= IDLE_TIMEOUT_MS )) && ! is_browser_media_playing; then
+  media_playing="no"
+  if is_browser_media_playing; then
+    media_playing="yes"
+  fi
+
+  if (( idle_ms >= IDLE_TIMEOUT_MS )) && [[ "$media_playing" == "no" ]]; then
+    if [[ "$last_mode" != "kiosk" ]]; then
+      log "entering kiosk mode (idle=${idle_ms}ms, media_playing=${media_playing})"
+      last_mode="kiosk"
+    fi
     start_kiosk
   else
+    if [[ "$last_mode" != "normal" ]]; then
+      log "leaving kiosk mode (idle=${idle_ms}ms, media_playing=${media_playing})"
+      last_mode="normal"
+    fi
     stop_kiosk
   fi
 
