@@ -41,6 +41,6 @@ journalctl --user -u metrics-idle-watcher.service -f
 - If a Chromium media session is `Playing`, kiosk stays off.
 
 ## Notes
-- This assumes Raspberry Pi OS with X11 session (`xprintidle` requirement).
+- Idle detection uses `loginctl` (`systemd-logind`).
 - Media detection uses `playerctl` MPRIS data for Chromium/Chrome players.
 - If your Chromium package path differs, edit `CHROMIUM_BIN` in config.
