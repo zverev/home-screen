@@ -6,6 +6,9 @@ After=graphical-session.target
 Type=simple
 Environment=DISPLAY=:0
 ExecStart=%h/.local/bin/metrics-idle-watcher.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=metrics-idle-watcher
 Restart=always
 RestartSec=2
 
