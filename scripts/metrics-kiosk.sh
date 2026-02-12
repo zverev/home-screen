@@ -43,6 +43,9 @@ while true; do
     --kiosk \
     --no-first-run \
     --disable-features=Translate \
+    --disable-sync \
+    --password-store=basic \
+    --use-mock-keychain \
     --autoplay-policy=no-user-gesture-required \
     "$url" >/dev/null 2>&1 &
 
